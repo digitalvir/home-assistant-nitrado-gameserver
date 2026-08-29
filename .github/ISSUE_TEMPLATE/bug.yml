@@ -1,0 +1,59 @@
+name: Bug report
+description: Report a reproducible integration defect without secrets or personal data.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste tokens, passwords, saves, provider files, public addresses, player names, account/service IDs, or unsanitized logs. Security issues belong in private vulnerability reporting, not this form.
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      placeholder: 2026.8.2
+    validations:
+      required: true
+  - type: input
+    id: integration_version
+    attributes:
+      label: Integration version
+      placeholder: YYYY.M.D.N
+    validations:
+      required: true
+  - type: dropdown
+    id: game_profile
+    attributes:
+      label: Active profile
+      options: [Generic Nitrado, Palworld, Other or unknown]
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Use synthetic values; do not paste logs or configuration dumps.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Describe the behavior. Do not paste unsanitized logs.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I removed credentials, saves, addresses, player names, account/service IDs, provider configuration, and unrelated personal data.
+          required: true
+        - label: I checked Repairs and reproduced this on the newest supported release.
+          required: true

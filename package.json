@@ -1,0 +1,21 @@
+{
+  "name": "nitrado-gameserver-frontend-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:frontend": "vitest run",
+    "test:browser": "node browser_tests/run_uiux_acceptance.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "^4.10.3",
+    "happy-dom": "20.11.6",
+    "playwright": "1.55.1",
+    "vitest": "4.1.11"
+  },
+  "vitest": {
+    "environment": "happy-dom",
+    "include": [
+      "frontend_tests/**/*.test.js"
+    ]
+  }
+}

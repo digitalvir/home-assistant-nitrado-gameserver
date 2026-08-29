@@ -1,0 +1,149 @@
+start:
+  name: Start Nitrado service
+  description: Start a managed Nitrado game server after safety checks, unless force is explicitly enabled.
+  fields:
+    device_id:
+      name: Device
+      description: Nitrado game server device to start.
+      required: false
+      selector:
+        device:
+          integration: nitrado_gameserver
+    service_id:
+      name: Service ID
+      description: Nitrado service ID managed by this integration.
+      required: false
+      selector:
+        text:
+    force:
+      name: Force
+      description: Bypass overridable safety blocks such as the stopped settle window. Hard blockers still apply.
+      required: false
+      default: false
+      selector:
+        boolean:
+stop:
+  name: Stop Nitrado service
+  description: Stop a managed Nitrado game server after safety checks, unless force is explicitly enabled.
+  fields:
+    device_id:
+      name: Device
+      description: Nitrado game server device to stop.
+      required: false
+      selector:
+        device:
+          integration: nitrado_gameserver
+    service_id:
+      name: Service ID
+      description: Nitrado service ID managed by this integration.
+      required: false
+      selector:
+        text:
+    reason:
+      name: Reason
+      description: Reason sent with the stop request.
+      required: false
+      selector:
+        text:
+    force:
+      name: Force
+      description: Bypass overridable safety blocks. Hard blockers still apply.
+      required: false
+      default: false
+      selector:
+        boolean:
+import_service:
+  name: Import Nitrado service
+  description: Import a discovered Nitrado service into this integration entry.
+  fields:
+    service_id:
+      name: Service ID
+      description: Nitrado service ID to import.
+      required: true
+      selector:
+        text:
+    display_name:
+      name: Display name
+      description: Optional Home Assistant display name for the service device.
+      required: false
+      selector:
+        text:
+    area_id:
+      name: Area
+      description: Optional Home Assistant area for the service device.
+      required: false
+      selector:
+        area:
+ignore_service:
+  name: Ignore Nitrado service
+  description: Ignore a discovered Nitrado service so it does not keep appearing as a discovered item.
+  fields:
+    service_id:
+      name: Service ID
+      description: Nitrado service ID to ignore.
+      required: true
+      selector:
+        text:
+remove_service:
+  name: Remove Nitrado service
+  description: Remove a managed Nitrado service from this integration entry and clean its registry entries.
+  fields:
+    service_id:
+      name: Service ID
+      description: Nitrado service ID to remove.
+      required: true
+      selector:
+        text:
+cancel_pending_shutdown:
+  name: Cancel pending shutdown
+  description: Cancel a pending automatic idle shutdown final-check sequence for a managed service.
+  fields:
+    device_id:
+      name: Device
+      description: Nitrado game server device whose pending shutdown should be canceled.
+      required: false
+      selector:
+        device:
+          integration: nitrado_gameserver
+    service_id:
+      name: Service ID
+      description: Nitrado service ID whose pending shutdown should be canceled.
+      required: false
+      selector:
+        text:
+profile_action:
+  name: Run game profile action
+  description: Run an action declared by the selected game profile for one managed server.
+  fields:
+    device_id:
+      name: Device
+      description: Nitrado game server device whose selected profile declares the action.
+      required: false
+      selector:
+        device:
+          integration: nitrado_gameserver
+    service_id:
+      name: Service ID
+      description: Alternative to selecting a device target.
+      required: false
+      selector:
+        text:
+    action_key:
+      name: Action key
+      description: Action key declared by the selected game profile.
+      required: true
+      selector:
+        text:
+    payload:
+      name: Payload
+      description: Optional action-specific payload object.
+      required: false
+      selector:
+        object:
+    confirm:
+      name: Confirm
+      description: Required when the profile marks the action as confirmation-protected.
+      required: false
+      default: false
+      selector:
+        boolean:

@@ -1,0 +1,201 @@
+{
+  "title": "Nitrado Game Server",
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Nitrado Game Server",
+        "description": "Connect a Nitrado account and discover hosted game server services.",
+        "data": {
+          "api_token": "Nitrado API token"
+        }
+      },
+      "discovered_service": {
+        "title": "New Nitrado service discovered",
+        "description": "{service_name}\n{game}\nService ID: {service_id}",
+        "data": {
+          "action": "Action",
+          "display_name": "Display name",
+          "area_id": "Area"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reconnect Nitrado account",
+        "description": "Enter a replacement API token for this Nitrado account.",
+        "data": {
+          "api_token": "Nitrado API token"
+        }
+      },
+      "reconfigure": {
+        "title": "Replace Nitrado API token",
+        "description": "Enter a replacement API token. The token must belong to the same Nitrado account.",
+        "data": {
+          "api_token": "Nitrado API token"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This Nitrado service is already managed.",
+      "not_found": "This discovered Nitrado service is no longer visible.",
+      "not_loaded": "The Nitrado account entry is not loaded.",
+      "no_profile_settings": "No standard game profile settings are available.",
+      "profile_setting_unavailable": "That game profile setting is no longer available.",
+      "service_ignored": "This Nitrado service was ignored.",
+      "service_imported": "The Nitrado service was imported.",
+      "reauth_successful": "The Nitrado account was reconnected.",
+      "reconfigure_successful": "The Nitrado API token was replaced."
+    },
+    "error": {
+      "cannot_connect": "Could not connect to Nitrado.",
+      "invalid_auth": "Nitrado rejected the API token.",
+      "unknown": "Unexpected error.",
+      "wrong_account": "That token belongs to a different Nitrado account."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "menu_options": {
+          "services": "Manage Nitrado services",
+          "settings": "Settings",
+          "profile_settings": "Game profile settings"
+        }
+      },
+      "settings": {
+        "title": "Nitrado Game Server Settings",
+        "data": {
+          "discovery_mode": "Discovery mode",
+          "discovery_interval": "Discovery interval seconds",
+          "status_interval": "Status interval seconds",
+          "missing_service_threshold": "Missing service threshold",
+          "settle_seconds": "Stopped settle window seconds"
+        }
+      },
+      "services": {
+        "title": "Nitrado Services",
+        "description": "Import or ignore discovered services, stop managing active services, manage ignored services again, or remove missing services.",
+        "data": {
+          "service_action": "Service action"
+        }
+      },
+      "import_service": {
+        "title": "Import Nitrado Service",
+        "description": "{service_name}",
+        "data": {
+          "display_name": "Display name",
+          "area_id": "Area"
+        }
+      },
+      "profile_settings": {
+        "title": "Game Profile Settings",
+        "description": "Choose a server, its active game profile, and an administrator setting.",
+        "data": {
+          "profile_setting": "Profile setting"
+        }
+      },
+      "profile_option": {
+        "title": "{option_name}",
+        "description": "Server: {service_name}\n\n{option_description}\n\n{idle_shutdown_impact}",
+        "data": {
+          "enabled": "Enabled",
+          "confirm": "I understand and confirm this change"
+        }
+      },
+      "profile_onboarding": {
+        "title": "Configure {option_name}",
+        "description": "Server: {service_name}\n\n{option_description}\n\n{idle_shutdown_impact}",
+        "data": {
+          "enabled": "Enable this setting",
+          "confirm": "I understand and confirm this decision"
+        }
+      }
+    },
+    "error": {
+      "confirmation_required": "Confirm that you understand this security and automation change."
+    }
+  },
+  "issues": {
+    "cockpit_asset_unavailable": {
+      "title": "Game cockpit frontend is unavailable",
+      "description": "The {profile_id} game profile loaded, but its cockpit frontend failed validation ({error_type}). Basic Nitrado management remains available. Repair or update the integration/profile package, then reload the integration."
+    },
+    "missing_service": {
+      "title": "Nitrado service is missing",
+      "description": "{service_name} is no longer visible in the Nitrado account service list. If this is expected, remove the service from the integration. If Nitrado brings it back with the same service ID, this issue will clear automatically."
+    },
+    "profile_option_acknowledgement_required": {
+      "title": "Game profile security decision required",
+      "fix_flow": {
+        "step": {
+          "profile_option": {
+            "title": "Configure {option_name}",
+            "description": "A game-specific security decision is required for service {service_name}.\n\n{option_description}\n\nEnabling the setting permits the described transport. Declining keeps affected capabilities unavailable and turns Auto Shutdown off. Re-enabling does not automatically re-arm Auto Shutdown.",
+            "data": {
+              "enabled": "Enable this setting",
+              "confirm": "I understand and confirm this decision"
+            }
+          }
+        },
+        "error": {
+          "confirmation_required": "Confirm that you understand this security and automation change.",
+          "repair_failed": "The profile setting could not be saved. Reload Repairs and try again."
+        }
+      }
+    },
+    "ftp_plaintext_consent_required": {
+      "title": "Secure Nitrado file transport is unavailable",
+      "description": "{service_name} could not establish secure FTPS repeatedly. Plaintext FTP remains blocked. Review the advanced transport warning before deciding whether to permit plaintext FTP for service {service_id}."
+    },
+    "ftp_credentials_unavailable": {
+      "title": "Nitrado file credentials are unavailable",
+      "description": "{service_name} repeatedly failed to obtain or authenticate its Nitrado FTP credentials. Advanced file operations remain unavailable for service {service_id}; ordinary server monitoring and controls are unaffected."
+    },
+    "ftp_transport_unavailable": {
+      "title": "Nitrado file transport is unavailable",
+      "description": "{service_name} repeatedly failed to establish the requested Nitrado file transport. Advanced file operations remain unavailable for service {service_id}; ordinary server monitoring and controls are unaffected."
+    },
+    "filesystem_recovery_required": {
+      "title": "Nitrado file operation requires recovery",
+      "fix_flow": {
+        "step": {"confirm": {"title": "Retry verified file recovery", "description": "Service {service_id} has an unfinished {operation} transaction ({transaction_id}) in state {state}. File changes and server Start are blocked until recovery is verified. The server must be stopped. Home Assistant will restore the exact pre-mutation content and verify it before clearing this issue. Select **Submit** to retry recovery."}},
+        "error": {"repair_failed": "Recovery did not complete. Check the server state and logs, then try again."}
+      }
+    },
+    "filesystem_recovery_blob_missing": {
+      "title": "Nitrado recovery data is missing",
+      "fix_flow": {
+        "step": {"confirm": {"title": "Acknowledge unverified file state", "description": "Service {service_id} transaction {transaction_id} cannot be recovered automatically because its private recovery data is missing. Do not start or change the server until the files are inspected manually. Only continue after manually inspecting the provider files. This archives the incident as **acknowledged, not verified**; it does not claim recovery succeeded. Select **Submit** to acknowledge it."}},
+        "error": {"repair_failed": "The incident could not be acknowledged. Reload Repairs and try again."}
+      }
+    },
+    "filesystem_recovery_blob_corrupt": {
+      "title": "Nitrado recovery data failed verification",
+      "fix_flow": {
+        "step": {"confirm": {"title": "Acknowledge unverified file state", "description": "Service {service_id} transaction {transaction_id} has recovery data that failed its integrity check. Do not start or change the server until the files are inspected manually. Only continue after manually inspecting the provider files. This archives the incident as **acknowledged, not verified**; it does not claim recovery succeeded. Select **Submit** to acknowledge it."}},
+        "error": {"repair_failed": "The incident could not be acknowledged. Reload Repairs and try again."}
+      }
+    },
+    "filesystem_journal_corrupt": {
+      "title": "Nitrado file recovery journal is corrupt",
+      "description": "The durable provider-file journal could not be verified. File changes and server Start are blocked until the journal and remote files are inspected."
+    },
+    "provider_grant_store_corrupt": {
+      "title": "Nitrado companion access grants are corrupt",
+      "description": "The persistent provider-connector grant store could not be verified. All companion integration access is denied until an administrator repairs or recreates the grants."
+    },
+    "native_backup_restore_review_required": {
+      "title": "Nitrado native backup restore needs review",
+      "fix_flow": {
+        "step": {"confirm": {"title": "Acknowledge unverified native restore", "description": "Native restore {operation_id} for service {service_id}, folder {folder}, backup {backup_id} is in state {state} ({failure_code}). Nitrado may have accepted the restore, but a complete provider restore transition was not proven. Inspect the provider and server before taking further recovery action. Only continue after inspecting Nitrado and the game server. This closes the incident as **acknowledged, unverified**; it does not claim the restore or game health succeeded. Select **Submit** to acknowledge it."}},
+        "error": {"repair_failed": "The native restore incident could not be acknowledged. Reload Repairs and try again."}
+      }
+    },
+    "native_backup_journal_corrupt": {
+      "title": "Nitrado native backup restore journal is corrupt",
+      "fix_flow": {
+        "step": {"confirm": {"title": "Quarantine corrupt restore history", "description": "The durable native-backup restore journal could not be verified. Native restores are blocked until the journal and provider state are inspected. Only continue after inspecting Nitrado and the game server. Home Assistant will preserve the rejected journal in quarantine before resetting active restore tracking. No restore will be marked successful. Select **Submit** to quarantine and reset."}},
+        "error": {"repair_failed": "The corrupt journal could not be safely quarantined and reset."}
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "domain": "nitrado_gameserver",
+  "name": "Nitrado Game Server",
+  "after_dependencies": [
+    "frontend"
+  ],
+  "codeowners": [
+    "@digitalvir"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "http"
+  ],
+  "documentation": "https://github.com/digitalvir/home-assistant-nitrado-gameserver",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/digitalvir/home-assistant-nitrado-gameserver/issues",
+  "requirements": [],
+  "version": "2026.8.29.20145"
+}

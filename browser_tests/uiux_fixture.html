@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Nitrado cockpit no-write browser fixture</title>
+  <style>
+    :root {
+      --primary-color:#03a9f4;
+      --primary-text-color:#212121;
+      --secondary-text-color:#5b6268;
+      --card-background-color:#fff;
+      --primary-background-color:#f5f5f5;
+      --secondary-background-color:#fafafa;
+      --divider-color:#d7d7d7;
+      --error-color:#db4437;
+      --warning-color:#c77800;
+      --success-color:#2e7d32;
+    }
+    body { margin:0; background:var(--primary-background-color); color:var(--primary-text-color); font:16px/1.5 system-ui,sans-serif; }
+  </style>
+  <script src="/node_modules/axe-core/axe.min.js"></script>
+</head>
+<body>
+<script type="module">
+  import { PANEL_ELEMENT } from "/custom_components/nitrado_gameserver/frontend/nitrado-game-server-panel.js";
+  import * as palworldModule from "/custom_components/nitrado_gameserver/frontend/palworld-cockpit.js";
+
+  const query = new URLSearchParams(location.search);
+  const locale = query.get("locale") || "en";
+  const entityIds = {
+    start:"button.palbox_start", stop:"button.palbox_stop", refresh:"button.palbox_refresh",
+    player_count:"sensor.palbox_player_count", player_max:"sensor.palbox_player_max",
+    online_players:"sensor.palbox_online_players", address:"sensor.palbox_address",
+    player_data_valid:"binary_sensor.palbox_player_data_valid", auto_shutdown:"switch.palbox_auto_shutdown",
+    auto_shutdown_status:"sensor.palbox_auto_shutdown_status", shutdown_pending:"binary_sensor.palbox_shutdown_pending",
+    idle_time_remaining:"sensor.palbox_idle_time_remaining", idle_shutdown_minutes:"number.palbox_idle_shutdown_minutes",
+    startup_cooldown_minutes:"number.palbox_startup_cooldown_minutes",
+    cancel_pending_shutdown:"button.palbox_cancel_pending_shutdown",
+    last_shutdown_reason:"sensor.palbox_last_shutdown_reason", last_reset_reason:"sensor.palbox_last_reset_reason",
+  };
+  const values = {
+    start:"unknown", stop:"unavailable", refresh:"unknown", player_count:"0", player_max:"32",
+    online_players:"None", address:"palbox.example:8211", player_data_valid:"on", auto_shutdown:"on",
+    auto_shutdown_status:"Inactive — server stopped", shutdown_pending:"off", idle_time_remaining:"0.0",
+    idle_shutdown_minutes:"20", startup_cooldown_minutes:"10", cancel_pending_shutdown:"unavailable",
+    last_shutdown_reason:"None recorded", last_reset_reason:"Server stopped",
+  };
+  const snapshot = {
+    identity:{ account_entry_id:"account-a", service_id:"19538356", service_name:"Palbox", game_name:"Palworld", profile_id:"palworld", profile_name:"Palworld" },
+    provider:{ status:"stopped", address:"palbox.example:8211", status_fresh:true, using_cached_data:false },
+    entities:Object.fromEntries(Object.entries(entityIds).map(([key,entity_id]) => [key,{ entity_id, state:values[key], attributes:{} }])),
+    profile:{
+      manifest:{}, public_options:{}, configured_options:[], editor_mutations_enabled:true,
+      save_bundle_mutations_enabled:true,
+      public_state:{ player_reporting:{
+        consent:{ status:"enabled", reason:"Plaintext Palworld REST access is approved." },
+        verification:{ status:"not_testable", reason:"Verification resumes when the server runs." },
+        endpoint_label:"palbox.example:8212",
+      } },
+    },
+    tools:{ filesystem:{ relevant:true, observed_transport:"ftps", http_root_mapping_proven:true } },
+  };
+  const descriptor = {
+    key:"palworld", name:"Palworld", api_version:1, frontend_revision:"development",
+    default_route:"overview", route_keys:["overview","auto-shutdown","save-games","game-settings"],
+    route_aliases:[["palworld","settings","game-settings"]], asset_url:"/unused-development.js",
+  };
+  const editorFile = {
+    revision:"source-revision",
+    model:{
+      schema_revision:"palworld-1.0-2026-08",
+      redacted_source:"[/Script/Pal.PalGameWorldSettings]\nOptionSettings=(ServerName=\"Test\",AdminPassword=[redacted],ExpRate=1.000000,bIsPvP=False,FutureKey=(A=1,B=2))\n",
+      settings:[
+        { key:"ServerName", raw_value:'"Test"', sensitive:false, configured:null },
+        { key:"AdminPassword", raw_value:null, sensitive:true, configured:true },
+        { key:"ExpRate", raw_value:"1.000000", sensitive:false, configured:null },
+        { key:"bIsPvP", raw_value:"False", sensitive:false, configured:null },
+        { key:"bEnablePlayerToPlayerDamage", raw_value:"False", sensitive:false, configured:null },
+        { key:"bEnableDefenseOtherGuildPlayer", raw_value:"False", sensitive:false, configured:null },
+        { key:"FutureKey", raw_value:"(A=1,B=2)", sensitive:false, configured:null },
+      ],
+    },
+  };
+  const panel = document.createElement(PANEL_ELEMENT);
+  panel._module = async () => palworldModule;
+  panel.narrow = query.get("narrow") === "1";
+  document.body.append(panel);
+  const fixtureCalls = [];
+  const callApi = async (method, path, body) => {
+    fixtureCalls.push({ method, path, body });
+    if (path === "nitrado_gameserver/extensions") return { services:[{ account_entry_id:"account-a", account_title:"Primary Nitrado account", service_id:"19538356", name:"Palbox", profile:{ name:"Palworld" } }] };
+    if (path.includes("/cockpit/bootstrap")) return { cockpit_api_version:1, registry_epoch:4, lease:"lease-token", lease_expires_in:900, mount_epoch:new URL(`http://fixture/${path}`).searchParams.get("mount_epoch"), degraded_code:null, cockpit:descriptor, snapshot };
+    if (path.includes("/cockpit/capabilities/editable-read")) return { file:editorFile };
+    if (path.includes("/cockpit/capabilities/editable-history")) return { history:[] };
+    if (path.includes("/cockpit/capabilities/editable-preview")) return { preview_token:"fixture-preview", preview:{ verdict:{ state:"supported", reason:null }, changed:true, requires_restart:true, redacted_diff:"-ServerName=Test\n+ServerName=Changed\n", redacted_changes_hidden:false } };
+    if (path.includes("/cockpit/capabilities/editable-apply")) return { requires_restart:true, operation_id:"fixture-settings-apply" };
+    if (path.includes("/cockpit/capabilities/editable-rollback")) return { requires_restart:true, operation_id:"fixture-settings-rollback" };
+    if (path.includes("/cockpit/capabilities/save-bundle-apply")) return { operation_id:"fixture-save-restore" };
+    if (path.includes("/cockpit/capabilities/start")) {
+      snapshot.provider.status="started";
+      snapshot.entities.start.state="unavailable";
+      snapshot.entities.stop.state="unknown";
+      return { code:"accepted" };
+    }
+    if (path.includes("/cockpit/capabilities/stop")) {
+      snapshot.provider.status="stopped";
+      snapshot.entities.start.state="unknown";
+      snapshot.entities.stop.state="unavailable";
+      return { code:"accepted" };
+    }
+    if (path.includes("/cockpit/capabilities/")) return { code:"accepted" };
+    throw new Error(`Unexpected fixture API call: ${method} ${path} ${JSON.stringify(body || {})}`);
+  };
+  panel.hass = {
+    states:{}, locale:{ language:locale }, language:locale,
+    callApi,
+    callWS:async (message) => message?.type === "auth/sign_path" ? { path:`${message.path}?authSig=fixture` } : Promise.reject(new Error("Unexpected WebSocket call")),
+    connection:{ subscribeEvents:async () => () => {} },
+  };
+  const waitFor = async (predicate) => {
+    for (let i=0;i<100;i+=1) { if (predicate()) return; await new Promise((resolve) => setTimeout(resolve,20)); }
+    throw new Error("Fixture cockpit did not become ready");
+  };
+  await waitFor(() => panel._status === "ready" && panel.shadowRoot?.querySelector("#palworld-main"));
+  window.fixture = {
+    panel,
+    root:panel.shadowRoot,
+    calls:fixtureCalls,
+    async route(route) { await panel._navigate(route); await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))); },
+    async openEditor() { await this.route("game-settings"); this.root.querySelector("#open-settings-editor").click(); await waitFor(() => this.root.querySelector("#palworld-settings-editor")?.open); },
+    async dirtyEditor() { const input=this.root.querySelector("#setting-ServerName"); input.value="Changed in Chromium"; input.dispatchEvent(new Event("change",{bubbles:true})); await new Promise((resolve) => requestAnimationFrame(resolve)); },
+  };
+  window.__fixtureReady = true;
+</script>
+</body>
+</html>

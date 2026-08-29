@@ -1,0 +1,8 @@
+{
+  "domain": "nitrado_companion",
+  "name": "Nitrado Companion Test",
+  "version": "2026.8.15",
+  "config_flow": true,
+  "dependencies": ["nitrado_gameserver"],
+  "codeowners": []
+}

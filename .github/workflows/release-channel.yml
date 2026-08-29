@@ -1,0 +1,23 @@
+name: Validate HACS release channel
+
+on:
+  release:
+    types: [published, released, prereleased, edited]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hacs-version-mode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Read public release metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100"
+          > "${RUNNER_TEMP}/releases.json"
+      - name: Reject HACS commit-mode fallback
+        run: python3 scripts/verify_hacs_release_channel.py "${RUNNER_TEMP}/releases.json"

@@ -1,0 +1,16 @@
+<svg role="img" aria-label="Nitrado Game Server project logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 512">
+  <metadata>Original Nitrado Game Server project artwork, licensed under MIT. This is not the Nitrado corporate logo.</metadata>
+  <g transform="translate(12 0)">
+    <rect x="56" y="72" width="400" height="152" rx="38" fill="#20283a"/>
+    <circle cx="120" cy="148" r="22" fill="#ff8a3d"/>
+    <rect x="174" y="128" width="218" height="40" rx="20" fill="#40d2e8"/>
+    <rect x="56" y="288" width="400" height="152" rx="38" fill="#20283a"/>
+    <circle cx="120" cy="364" r="22" fill="#40d2e8"/>
+    <rect x="174" y="344" width="218" height="40" rx="20" fill="#8d9bb6"/>
+    <path d="M112 224v64M400 224v64" stroke="#20283a" stroke-width="24" stroke-linecap="round"/>
+  </g>
+  <rect x="544" y="120" width="344" height="56" rx="28" fill="#20283a"/>
+  <rect x="544" y="228" width="264" height="56" rx="28" fill="#40d2e8"/>
+  <rect x="544" y="336" width="312" height="56" rx="28" fill="#8d9bb6"/>
+  <circle cx="914" cy="148" r="28" fill="#ff8a3d"/>
+</svg>
